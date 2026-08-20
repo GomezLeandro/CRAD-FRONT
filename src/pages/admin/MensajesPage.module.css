@@ -1,0 +1,45 @@
+.title {
+  font-size: 22px;
+  color: var(--navy-deep);
+  margin-bottom: 20px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: #fff;
+  border: 0.5px solid var(--line);
+  border-left: 3px solid var(--navy);
+  padding: 16px 18px;
+}
+
+.card.leido {
+  border-left-color: var(--line);
+  opacity: 0.65;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.head span {
+  color: var(--steel);
+}
+
+.toggle {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: var(--navy);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}

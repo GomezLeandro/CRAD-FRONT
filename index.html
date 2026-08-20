@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!--
+      CSP vía meta tag: es un piso mínimo, no el mecanismo definitivo.
+      La spec de CSP no permite `frame-ancestors` en meta tags (protección
+      anti-clickjacking) — esa y el resto de los headers recomendados
+      (X-Content-Type-Options, Strict-Transport-Security, Permissions-Policy)
+      están documentados en /public/_headers y en SECURITY.md para
+      configurarlos a nivel del hosting (Netlify, Vercel, Cloudflare, etc).
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.supabase.co; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self'; object-src 'none'"
+    />
+    <title>CRAD Construcciones y Reparaciones</title>
+    <meta
+      name="description"
+      content="Reparaciones, instalaciones y obra en San Martín y zona norte del GBA. Un solo equipo para todo el proceso."
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

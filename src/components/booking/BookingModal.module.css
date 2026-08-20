@@ -1,0 +1,55 @@
+.wrap {
+  padding: 26px 28px 28px;
+}
+
+.title {
+  font-size: 22px;
+  color: var(--navy-deep);
+  margin-bottom: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.urgencyNote {
+  background: #eef4fa;
+  border: 0.5px solid #b9cfe3;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--navy-deep);
+  margin: 6px 0 18px;
+  line-height: 1.5;
+}
+
+.urgencyNote span {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.urgencyNote a {
+  color: var(--navy);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.success {
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.success p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}

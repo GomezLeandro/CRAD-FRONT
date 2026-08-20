@@ -1,0 +1,27 @@
+.button {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 56px;
+  height: 56px;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  box-shadow: 0 6px 18px rgba(4, 44, 83, 0.35);
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background: var(--blue-mid);
+}
+
+@media (max-width: 640px) {
+  .button {
+    width: 48px;
+    height: 48px;
+    right: 16px;
+    bottom: 16px;
+  }
+}

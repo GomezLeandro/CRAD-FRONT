@@ -1,0 +1,37 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.title {
+  font-size: 22px;
+  color: var(--navy-deep);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--steel);
+  margin-bottom: 24px;
+}
+
+.card .btn {
+  width: 100%;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.card .field {
+  margin-bottom: 16px;
+}
