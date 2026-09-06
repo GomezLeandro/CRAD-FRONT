@@ -45,7 +45,7 @@ export function Servicios() {
               <div key={s.id} className={styles.card}>
                 <div className={styles.icon}>
                   {s.iconoUrl ? (
-                    <img src={s.iconoUrl} alt="" width={34} height={34} />
+                    <img src={s.iconoUrl} alt="" width={48} height={48} />
                   ) : (
                     <RubroIcon rubroKey={s.rubroKey} />
                   )}
