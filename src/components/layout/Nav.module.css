@@ -1,6 +1,6 @@
 .nav {
   background: var(--bg-dark);
-  padding: 14px 0;
+  padding: 10px 0;
   position: sticky;
   top: 0;
   z-index: 20;
@@ -19,14 +19,14 @@
 }
 
 .logoImg {
-  height: 58px;
+  height: 80px;
   width: auto;
   display: block;
 }
 
 @media (max-width: 640px) {
   .logoImg {
-    height: 46px;
+    height: 60px;
   }
 }
 
