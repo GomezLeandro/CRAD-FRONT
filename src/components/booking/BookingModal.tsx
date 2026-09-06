@@ -152,6 +152,7 @@ export function BookingModal({ open, onClose, rubro }: BookingModalProps) {
                 <input
                   id="fecha"
                   type="date"
+                  lang="es-AR"
                   value={fecha}
                   min={new Date().toISOString().slice(0, 10)}
                   onChange={(e) => setFecha(e.target.value)}
