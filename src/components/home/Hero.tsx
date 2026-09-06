@@ -22,7 +22,7 @@ export function Hero() {
           </div>
         </div>
         <div className={styles.visual} aria-hidden="true">
-          <BuildingBlueprint width={300} height={368} />
+          <BuildingBlueprint width={380} height={467} />
           <div className={styles.dims}>
             <span className={styles.r} />
             <span>alt. 3.40 m</span>
