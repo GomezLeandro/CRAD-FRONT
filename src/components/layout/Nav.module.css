@@ -19,9 +19,15 @@
 }
 
 .logoImg {
-  height: 38px;
+  height: 58px;
   width: auto;
   display: block;
+}
+
+@media (max-width: 640px) {
+  .logoImg {
+    height: 46px;
+  }
 }
 
 .links {
