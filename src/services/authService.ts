@@ -271,6 +271,29 @@ export async function obtenerEmailActual(): Promise<ServiceResult<string>> {
   return { ok: true, data: user.email };
 }
 
+/**
+ * Borra un usuario del panel (y su perfil, por ON DELETE CASCADE). Corre
+ * en la Edge Function `delete-admin-user` porque requiere la service_role
+ * key (igual que invitarUsuario / resetearPasswordGenerica).
+ */
+export async function eliminarUsuario(userId: string): Promise<ServiceResult<null>> {
+  const { error } = await supabase.functions.invoke('delete-admin-user', {
+    body: { userId },
+  });
+
+  if (error) {
+    if (error instanceof FunctionsHttpError) {
+      const body = await error.context.json().catch(() => null);
+      return {
+        ok: false,
+        error: { code: 'UNKNOWN', message: body?.error ?? error.message },
+      };
+    }
+    return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
+  }
+  return { ok: true, data: null };
+}
+
 export function onAuthStateChange(callback: () => void): () => void {
   const {
     data: { subscription },

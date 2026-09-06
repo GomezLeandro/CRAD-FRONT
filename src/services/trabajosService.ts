@@ -24,6 +24,24 @@ function mapRow(row: TrabajoRow): Trabajo {
 }
 
 const TABLE = 'trabajos';
+const FOTOS_BUCKET = 'trabajos-fotos';
+
+/** Sube la foto al bucket público de Storage y devuelve su URL. */
+export async function subirFotoTrabajo(file: File): Promise<ServiceResult<string>> {
+  const ext = file.name.split('.').pop() ?? 'jpg';
+  const path = `${crypto.randomUUID()}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(FOTOS_BUCKET)
+    .upload(path, file, { contentType: file.type });
+
+  if (uploadError) {
+    return { ok: false, error: { code: 'UNKNOWN', message: uploadError.message } };
+  }
+
+  const { data } = supabase.storage.from(FOTOS_BUCKET).getPublicUrl(path);
+  return { ok: true, data: data.publicUrl };
+}
 
 /** Público: solo trae los activos, para la sección Trabajos del sitio. */
 export async function listarTrabajosPublicos(): Promise<ServiceResult<Trabajo[]>> {

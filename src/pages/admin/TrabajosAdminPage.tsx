@@ -1,9 +1,10 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import {
   listarTrabajosAdmin,
   crearTrabajo,
   actualizarTrabajo,
   eliminarTrabajo,
+  subirFotoTrabajo,
 } from '../../services/trabajosService';
 import type { Trabajo } from '../../types/domain';
 import styles from './ContentAdminPage.module.css';
@@ -13,6 +14,9 @@ export function TrabajosAdminPage() {
   const [titulo, setTitulo] = useState('');
   const [ubicacion, setUbicacion] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState('');
 
   async function cargar() {
     const r = await listarTrabajosAdmin();
@@ -25,27 +29,89 @@ export function TrabajosAdminPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    await crearTrabajo({
+    setError('');
+    setGuardando(true);
+
+    let imagenUrl: string | null = null;
+    if (fotoFile) {
+      const subida = await subirFotoTrabajo(fotoFile);
+      if (!subida.ok) {
+        setGuardando(false);
+        setError(subida.error.message);
+        return;
+      }
+      imagenUrl = subida.data;
+    }
+
+    const result = await crearTrabajo({
       titulo,
       ubicacion,
       descripcion,
-      imagenUrl: null,
+      imagenUrl,
       orden: trabajos.length,
       activo: true,
     });
+
+    setGuardando(false);
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     setTitulo('');
     setUbicacion('');
     setDescripcion('');
+    setFotoFile(null);
+    cargar();
+  }
+
+  async function guardarCampo(t: Trabajo, campo: 'titulo' | 'ubicacion' | 'descripcion', valor: string) {
+    if (valor === t[campo]) return;
+    setError('');
+    const result = await actualizarTrabajo(t.id, { [campo]: valor });
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
+    cargar();
+  }
+
+  async function cambiarFoto(t: Trabajo, e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setError('');
+    const subida = await subirFotoTrabajo(file);
+    if (!subida.ok) {
+      setError(subida.error.message);
+      return;
+    }
+    const result = await actualizarTrabajo(t.id, { imagenUrl: subida.data });
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
   async function toggleActivo(t: Trabajo) {
-    await actualizarTrabajo(t.id, { activo: !t.activo });
+    setError('');
+    const result = await actualizarTrabajo(t.id, { activo: !t.activo });
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
   async function eliminar(id: string) {
-    await eliminarTrabajo(id);
+    if (!window.confirm('¿Borrar este trabajo del portfolio? No se puede deshacer.')) return;
+    setError('');
+    const result = await eliminarTrabajo(id);
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
@@ -72,17 +138,55 @@ export function TrabajosAdminPage() {
             required
           />
         </div>
-        <button type="submit" className="btn btn-navy">
-          Agregar trabajo
+        <div className="field">
+          <label htmlFor="foto">Foto</label>
+          <input
+            id="foto"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFotoFile(e.target.files?.[0] ?? null)}
+          />
+        </div>
+
+        {error && <p className="error">{error}</p>}
+
+        <button type="submit" className="btn btn-navy" disabled={guardando}>
+          {guardando ? 'Guardando...' : 'Agregar trabajo'}
         </button>
       </form>
 
       <div className={styles.list}>
         {trabajos.map((t) => (
           <div key={t.id} className={styles.row}>
+            {t.imagenUrl && (
+              <img src={t.imagenUrl} alt="" width={56} height={42} style={{ objectFit: 'cover' }} />
+            )}
             <div>
-              <strong>{t.titulo}</strong>
-              <p className={styles.sub}>{t.ubicacion}</p>
+              <input
+                defaultValue={t.titulo}
+                style={{ fontWeight: 700, border: 'none', background: 'none', padding: 0, width: '100%' }}
+                onBlur={(e) => guardarCampo(t, 'titulo', e.target.value)}
+              />
+              <input
+                defaultValue={t.ubicacion}
+                className={styles.sub}
+                style={{ border: 'none', background: 'none', padding: 0, width: '100%' }}
+                onBlur={(e) => guardarCampo(t, 'ubicacion', e.target.value)}
+              />
+              <textarea
+                defaultValue={t.descripcion}
+                rows={2}
+                onBlur={(e) => guardarCampo(t, 'descripcion', e.target.value)}
+              />
+              <label className={styles.sub} style={{ cursor: 'pointer', display: 'inline-block' }}>
+                Cambiar foto
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => cambiarFoto(t, e)}
+                  style={{ display: 'none' }}
+                />
+              </label>
             </div>
             <button className={styles.toggle} onClick={() => toggleActivo(t)}>
               {t.activo ? 'Ocultar' : 'Publicar'}

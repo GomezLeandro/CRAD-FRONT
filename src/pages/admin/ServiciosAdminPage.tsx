@@ -43,7 +43,7 @@ export function ServiciosAdminPage() {
       iconoUrl = subida.data;
     }
 
-    await crearServicio({
+    const result = await crearServicio({
       nombre,
       rubroKey,
       descripcion,
@@ -53,6 +53,10 @@ export function ServiciosAdminPage() {
     });
 
     setGuardando(false);
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     setNombre('');
     setRubroKey('');
     setDescripcion('');
@@ -60,8 +64,14 @@ export function ServiciosAdminPage() {
     cargar();
   }
 
-  async function guardar(s: Servicio, descripcion: string) {
-    await actualizarServicio(s.id, { descripcion });
+  async function guardarCampo(s: Servicio, campo: 'nombre' | 'rubroKey' | 'descripcion', valor: string) {
+    if (valor === s[campo]) return;
+    setError('');
+    const result = await actualizarServicio(s.id, { [campo]: valor });
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
@@ -76,17 +86,32 @@ export function ServiciosAdminPage() {
       setError(subida.error.message);
       return;
     }
-    await actualizarServicio(s.id, { iconoUrl: subida.data });
+    const result = await actualizarServicio(s.id, { iconoUrl: subida.data });
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
   async function toggleActivo(s: Servicio) {
-    await actualizarServicio(s.id, { activo: !s.activo });
+    setError('');
+    const result = await actualizarServicio(s.id, { activo: !s.activo });
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
   async function eliminar(id: string) {
-    await eliminarServicio(id);
+    if (!window.confirm('¿Borrar este servicio? No se puede deshacer.')) return;
+    setError('');
+    const result = await eliminarServicio(id);
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
     cargar();
   }
 
@@ -143,13 +168,21 @@ export function ServiciosAdminPage() {
               <img src={s.iconoUrl} alt="" width={34} height={34} style={{ objectFit: 'contain' }} />
             )}
             <div>
-              <strong>{s.nombre}</strong>
+              <input
+                defaultValue={s.nombre}
+                style={{ fontWeight: 700, border: 'none', background: 'none', padding: 0, width: '100%' }}
+                onBlur={(e) => guardarCampo(s, 'nombre', e.target.value)}
+              />
+              <input
+                defaultValue={s.rubroKey}
+                className={styles.sub}
+                style={{ border: 'none', background: 'none', padding: 0, width: '100%' }}
+                onBlur={(e) => guardarCampo(s, 'rubroKey', e.target.value)}
+              />
               <textarea
                 defaultValue={s.descripcion}
                 rows={2}
-                onBlur={(e) => {
-                  if (e.target.value !== s.descripcion) guardar(s, e.target.value);
-                }}
+                onBlur={(e) => guardarCampo(s, 'descripcion', e.target.value)}
               />
               <label className={styles.sub} style={{ cursor: 'pointer', display: 'inline-block' }}>
                 Cambiar ícono

@@ -1,9 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import {
   listarPerfiles,
   actualizarRolPerfil,
   invitarUsuario,
   resetearPasswordGenerica,
+  eliminarUsuario,
 } from '../../services/authService';
 import type { Profile, UserRole } from '../../types/domain';
 import styles from './ContentAdminPage.module.css';
@@ -11,6 +13,7 @@ import styles from './ContentAdminPage.module.css';
 const PASSWORD_GENERICA = 'Crad2026$';
 
 export function UsuariosAdminPage() {
+  const { profile: propio } = useAuth();
   const [perfiles, setPerfiles] = useState<Profile[]>([]);
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
@@ -20,6 +23,7 @@ export function UsuariosAdminPage() {
   const [enviado, setEnviado] = useState('');
   const [blanqueandoId, setBlanqueandoId] = useState<string | null>(null);
   const [blanqueado, setBlanqueado] = useState<string | null>(null);
+  const [eliminandoId, setEliminandoId] = useState<string | null>(null);
 
   async function cargar() {
     const r = await listarPerfiles();
@@ -51,6 +55,23 @@ export function UsuariosAdminPage() {
       return;
     }
     setBlanqueado(p.id);
+  }
+
+  async function eliminar(p: Profile) {
+    const confirmado = window.confirm(
+      `¿Borrar a ${p.nombre}? Pierde el acceso al panel de inmediato. Esto no se puede deshacer.`
+    );
+    if (!confirmado) return;
+
+    setEliminandoId(p.id);
+    setError('');
+    const result = await eliminarUsuario(p.id);
+    setEliminandoId(null);
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
+    cargar();
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -131,6 +152,15 @@ export function UsuariosAdminPage() {
             >
               {blanqueandoId === p.id ? 'Blanqueando...' : 'Blanquear contraseña'}
             </button>
+            {p.id !== propio?.id && (
+              <button
+                className={styles.deleteBtn}
+                disabled={eliminandoId === p.id}
+                onClick={() => eliminar(p)}
+              >
+                {eliminandoId === p.id ? 'Borrando...' : 'Eliminar usuario'}
+              </button>
+            )}
           </div>
         ))}
       </div>
