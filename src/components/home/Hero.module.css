@@ -111,12 +111,12 @@
     opacity: 0.16;
     z-index: 0;
     pointer-events: none;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: center;
+    align-items: center;
   }
   .visual svg {
-    width: 120%;
-    max-width: 480px;
+    width: 60%;
+    max-width: 320px;
     height: auto;
   }
   .text {
@@ -135,8 +135,8 @@
     padding-bottom: 40px;
   }
   .visual svg {
-    width: 115%;
-    max-width: 380px;
+    width: 95%;
+    max-width: 340px;
   }
   .text h1 {
     font-size: 30px;
