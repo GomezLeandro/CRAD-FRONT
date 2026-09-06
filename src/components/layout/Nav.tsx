@@ -16,7 +16,11 @@ export function Nav() {
       <header className={styles.nav}>
         <div className={`wrap ${styles.inner}`}>
           <a href="#top" className={styles.logo} aria-label="CRAD - inicio">
-            <img src="/Logo.png" alt="CRAD Construcciones y Reparaciones" className={styles.logoImg} />
+            <img src="/LogoIcon.png" alt="" className={styles.logoIcon} />
+            <span className={styles.logoText}>
+              CRAD
+              <small>Construcciones y Reparaciones</small>
+            </span>
           </a>
           <nav className={styles.links}>
             {LINKS.map((l) => (

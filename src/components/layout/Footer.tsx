@@ -6,7 +6,11 @@ export function Footer() {
       <div className="wrap">
         <div className={styles.top}>
           <div className={styles.brand}>
-            <img src="/Logo.png" alt="CRAD Construcciones y Reparaciones" className={styles.logoImg} />
+            <img src="/LogoIcon.png" alt="" className={styles.logoIcon} />
+            <span className={styles.logoText}>
+              CRAD
+              <small>Construcciones y Reparaciones</small>
+            </span>
           </div>
           <div className={styles.contact}>
             <div>

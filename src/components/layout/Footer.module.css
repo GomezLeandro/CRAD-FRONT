@@ -15,12 +15,29 @@
 .brand {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
-.logoImg {
-  height: 50px;
+.logoIcon {
+  height: 38px;
   width: auto;
   display: block;
+}
+
+.logoText {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.logoText small {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .contact {

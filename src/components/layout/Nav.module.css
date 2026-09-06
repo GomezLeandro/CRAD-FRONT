@@ -16,17 +16,41 @@
 .logo {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
-.logoImg {
-  height: 60px;
+.logoIcon {
+  height: 42px;
   width: auto;
   display: block;
 }
 
+.logoText {
+  color: #fff;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.logoText small {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
 @media (max-width: 640px) {
-  .logoImg {
-    height: 48px;
+  .logoIcon {
+    height: 34px;
+  }
+  .logoText {
+    font-size: 17px;
+  }
+  .logoText small {
+    font-size: 7.5px;
   }
 }
 
