@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 interface RubroIconProps {
   rubroKey: string;
 }
@@ -18,7 +20,7 @@ function normalize(value: string): string {
     .trim();
 }
 
-const ICONS: Record<string, JSX.Element> = {
+const ICONS: Record<string, ReactElement> = {
   plomeria: (
     <svg {...ICON_PROPS} strokeWidth={1.6}>
       <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-8.13 7.87l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9A6 6 0 0 1 17.5 2.9l-3.1 3.1z" />

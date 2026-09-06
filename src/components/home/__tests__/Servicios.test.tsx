@@ -17,7 +17,15 @@ describe('Servicios', () => {
     listarMock.mockResolvedValue({
       ok: true,
       data: [
-        { id: '1', rubroKey: 'plomeria', nombre: 'Plomería', descripcion: 'Fugas y reparaciones', orden: 0, activo: true },
+        {
+          id: '1',
+          rubroKey: 'plomeria',
+          nombre: 'Plomería',
+          descripcion: 'Fugas y reparaciones',
+          iconoUrl: null,
+          orden: 0,
+          activo: true,
+        },
       ],
     });
 

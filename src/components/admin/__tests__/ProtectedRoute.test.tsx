@@ -27,7 +27,7 @@ beforeEach(() => vi.clearAllMocks());
 
 describe('ProtectedRoute', () => {
   it('muestra un estado de carga mientras se resuelve la sesión', () => {
-    useAuthMock.mockReturnValue({ profile: null, loading: true });
+    useAuthMock.mockReturnValue({ profile: null, loading: true, refresh: vi.fn() });
     renderWithRoute(
       <ProtectedRoute>
         <p>Contenido protegido</p>
@@ -37,7 +37,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('redirige a login si no hay sesión', () => {
-    useAuthMock.mockReturnValue({ profile: null, loading: false });
+    useAuthMock.mockReturnValue({ profile: null, loading: false, refresh: vi.fn() });
     renderWithRoute(
       <ProtectedRoute>
         <p>Contenido protegido</p>
@@ -48,8 +48,9 @@ describe('ProtectedRoute', () => {
 
   it('deja pasar a un admin cuando no se restringe por rol', () => {
     useAuthMock.mockReturnValue({
-      profile: { id: '1', nombre: 'Ana', role: 'admin', createdAt: '' },
+      profile: { id: '1', nombre: 'Ana', role: 'admin', createdAt: '', avatarUrl: null },
       loading: false,
+      refresh: vi.fn(),
     });
     renderWithRoute(
       <ProtectedRoute>
@@ -61,8 +62,9 @@ describe('ProtectedRoute', () => {
 
   it('bloquea a un admin en una ruta exclusiva de superadmin', () => {
     useAuthMock.mockReturnValue({
-      profile: { id: '1', nombre: 'Ana', role: 'admin', createdAt: '' },
+      profile: { id: '1', nombre: 'Ana', role: 'admin', createdAt: '', avatarUrl: null },
       loading: false,
+      refresh: vi.fn(),
     });
     renderWithRoute(
       <ProtectedRoute allowedRoles={['superadmin']}>
@@ -75,8 +77,9 @@ describe('ProtectedRoute', () => {
 
   it('deja pasar a un superadmin en una ruta exclusiva de superadmin', () => {
     useAuthMock.mockReturnValue({
-      profile: { id: '1', nombre: 'Leandro', role: 'superadmin', createdAt: '' },
+      profile: { id: '1', nombre: 'Leandro', role: 'superadmin', createdAt: '', avatarUrl: null },
       loading: false,
+      refresh: vi.fn(),
     });
     renderWithRoute(
       <ProtectedRoute allowedRoles={['superadmin']}>
