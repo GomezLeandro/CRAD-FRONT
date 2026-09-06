@@ -47,6 +47,11 @@ function fmtMoney(n: number): string {
   return '$' + Math.round(n).toLocaleString('es-AR');
 }
 
+function mesYAnioActual(): string {
+  const texto = new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric' }).format(new Date());
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
+
 function pctDelta(actual: number, previo: number): number | null {
   if (previo === 0) return actual === 0 ? 0 : null;
   return ((actual - previo) / Math.abs(previo)) * 100;
@@ -236,15 +241,25 @@ export function FinanzasDashboardPage() {
       )}
 
       <div className={styles.hero}>
-        <div>
-          <p className={styles.heroLabel}>Tu comisión ({actual.comisionPct}%)</p>
-          <p className={styles.heroValue}>{fmtMoney(actual.comision)}</p>
-          <p className={styles.heroNote}>Sobre la ganancia neta del período · {fmtMoney(actual.gananciaNeta)}</p>
-        </div>
-        <div className={styles.heroDelta}>
-          <span>{heroDelta.text}</span>
-          <span>{heroDelta.note}</span>
-        </div>
+        {esSuperadmin ? (
+          <>
+            <div>
+              <p className={styles.heroLabel}>Tu comisión ({actual.comisionPct}%)</p>
+              <p className={styles.heroValue}>{fmtMoney(actual.comision)}</p>
+              <p className={styles.heroNote}>Sobre la ganancia neta del período · {fmtMoney(actual.gananciaNeta)}</p>
+            </div>
+            <div className={styles.heroDelta}>
+              <span>{heroDelta.text}</span>
+              <span>{heroDelta.note}</span>
+            </div>
+          </>
+        ) : (
+          <div>
+            <p className={styles.heroLabel}>Estás viendo</p>
+            <p className={styles.heroValue}>{mesYAnioActual()}</p>
+            <p className={styles.heroNote}>El panel muestra los datos del mes en curso.</p>
+          </div>
+        )}
       </div>
 
       <div className={styles.kpis}>
