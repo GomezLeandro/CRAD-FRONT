@@ -53,10 +53,17 @@ const TABLE = 'turnos';
  * Crea un turno en estado "pendiente". Es una operación PÚBLICA (no
  * requiere sesión) — la RLS de Postgres solo permite INSERT con
  * estado='pendiente', nunca otro valor (ver policies.sql).
+ *
+ * OJO: no encadenar `.select()` acá. La política de SELECT de esta tabla
+ * es admin-only, y un INSERT ... RETURNING queda sujeto a esa misma
+ * política — sin fila visible para devolver, Postgres rechaza el INSERT
+ * entero con "new row violates row-level security policy", aunque el
+ * WITH CHECK del insert sea válido. Como quien reserva un turno no
+ * necesita leer su propia fila de vuelta, devolvemos `null`.
  */
 export async function crearTurno(
   input: NuevoTurnoInput
-): Promise<ServiceResult<Turno>> {
+): Promise<ServiceResult<null>> {
   // El honeypot nunca se manda a la base; si vino lleno, ya lo filtra
   // el schema (max(0)) y devolvemos error genérico sin dar pistas al bot.
   const parsed = nuevoTurnoSchema.safeParse(input);
@@ -69,20 +76,16 @@ export async function crearTurno(
 
   const { website: _honeypot, ...clean } = parsed.data;
 
-  const { data, error } = await supabase
-    .from(TABLE)
-    .insert({
-      rubro: clean.rubro,
-      problema: clean.problema,
-      direccion: clean.direccion,
-      contacto: clean.contacto,
-      fecha: clean.fecha,
-      horario: clean.horario,
-      urgente: clean.urgente,
-      estado: 'pendiente',
-    })
-    .select()
-    .single<TurnoRow>();
+  const { error } = await supabase.from(TABLE).insert({
+    rubro: clean.rubro,
+    problema: clean.problema,
+    direccion: clean.direccion,
+    contacto: clean.contacto,
+    fecha: clean.fecha,
+    horario: clean.horario,
+    urgente: clean.urgente,
+    estado: 'pendiente',
+  });
 
   if (error) {
     // 23505 = unique_violation en Postgres → alguien ya tomó ese horario.
@@ -98,7 +101,7 @@ export async function crearTurno(
     return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
   }
 
-  return { ok: true, data: mapRow(data) };
+  return { ok: true, data: null };
 }
 
 /**

@@ -5,7 +5,8 @@ import type { NuevoTurnoInput } from '../../types/domain';
 // service, para que nunca se dispare una llamada de red real.
 const singleMock = vi.fn();
 const selectMock = vi.fn(() => ({ single: singleMock }));
-const insertMock = vi.fn((_payload: Record<string, unknown>) => ({ select: selectMock }));
+const insertResultMock = vi.fn();
+const insertMock = vi.fn((_payload: Record<string, unknown>) => insertResultMock());
 const eqMock = vi.fn();
 const updateMock = vi.fn();
 const orderMock = vi.fn();
@@ -56,42 +57,25 @@ describe('crearTurno', () => {
   });
 
   it('crea el turno en estado pendiente cuando el input es válido', async () => {
-    singleMock.mockResolvedValue({
-      data: {
-        id: 'turno-1',
-        rubro: 'Plomería',
-        problema: inputValido.problema,
-        direccion: inputValido.direccion,
-        contacto: inputValido.contacto,
-        fecha: inputValido.fecha,
-        horario: inputValido.horario,
-        urgente: false,
-        estado: 'pendiente',
-        created_at: '2026-08-01T00:00:00Z',
-        updated_at: '2026-08-01T00:00:00Z',
-        confirmado_por: null,
-      },
-      error: null,
-    });
+    // No encadena `.select()`: la política de SELECT de turnos es
+    // admin-only, así que un INSERT ... RETURNING como público rompería
+    // (ver el comentario en turnosService.crearTurno).
+    insertResultMock.mockResolvedValue({ error: null });
 
     const result = await crearTurno(inputValido);
 
     expect(result.ok).toBe(true);
-    if (result.ok) {
-      expect(result.data.estado).toBe('pendiente');
-      expect(result.data.id).toBe('turno-1');
-    }
     expect(insertMock).toHaveBeenCalledWith(
       expect.objectContaining({ estado: 'pendiente', rubro: 'Plomería' })
     );
     // El honeypot nunca debe llegar al insert.
     const insertPayload = insertMock.mock.calls[0][0];
     expect(insertPayload).not.toHaveProperty('website');
+    expect(selectMock).not.toHaveBeenCalled();
   });
 
   it('devuelve SLOT_TAKEN si Postgres rechaza por horario duplicado (23505)', async () => {
-    singleMock.mockResolvedValue({
-      data: null,
+    insertResultMock.mockResolvedValue({
       error: { code: '23505', message: 'duplicate key value violates unique constraint' },
     });
 
@@ -102,8 +86,7 @@ describe('crearTurno', () => {
   });
 
   it('devuelve UNKNOWN para cualquier otro error de base', async () => {
-    singleMock.mockResolvedValue({
-      data: null,
+    insertResultMock.mockResolvedValue({
       error: { code: '500', message: 'algo raro pasó' },
     });
 

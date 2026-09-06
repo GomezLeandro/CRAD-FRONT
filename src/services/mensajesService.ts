@@ -24,10 +24,19 @@ function mapRow(row: MensajeRow): Mensaje {
 
 const TABLE = 'mensajes';
 
-/** Envío público del formulario de contacto general. */
+/**
+ * Envío público del formulario de contacto general.
+ *
+ * OJO: no encadenar `.select()` acá. La política de SELECT de esta tabla
+ * es admin-only, y un INSERT ... RETURNING queda sujeto a esa misma
+ * política — sin fila visible para devolver, Postgres rechaza el INSERT
+ * entero con "new row violates row-level security policy", aunque el
+ * WITH CHECK del insert sea válido. Quien manda el mensaje no necesita
+ * leerlo de vuelta, así que devolvemos `null`.
+ */
 export async function crearMensaje(
   input: NuevoMensajeInput
-): Promise<ServiceResult<Mensaje>> {
+): Promise<ServiceResult<null>> {
   const parsed = nuevoMensajeSchema.safeParse(input);
   if (!parsed.success) {
     return {
@@ -37,16 +46,12 @@ export async function crearMensaje(
   }
   const { website: _honeypot, ...clean } = parsed.data;
 
-  const { data, error } = await supabase
-    .from(TABLE)
-    .insert(clean)
-    .select()
-    .single<MensajeRow>();
+  const { error } = await supabase.from(TABLE).insert(clean);
 
   if (error) {
     return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
   }
-  return { ok: true, data: mapRow(data) };
+  return { ok: true, data: null };
 }
 
 /** Bandeja de entrada — requiere sesión admin/superadmin (RLS). */

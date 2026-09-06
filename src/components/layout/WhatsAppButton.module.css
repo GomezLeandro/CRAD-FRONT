@@ -4,17 +4,18 @@
   bottom: 24px;
   width: 56px;
   height: 56px;
-  background: var(--navy);
+  border-radius: 50%;
+  background: #25d366;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 50;
-  box-shadow: 0 6px 18px rgba(4, 44, 83, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   transition: background 0.2s;
 }
 
 .button:hover {
-  background: var(--blue-mid);
+  background: #1ebe5b;
 }
 
 @media (max-width: 640px) {

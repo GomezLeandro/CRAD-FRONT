@@ -135,9 +135,9 @@ export function BookingModal({ open, onClose, rubro }: BookingModalProps) {
             </div>
 
             <div className="field">
-              <label htmlFor="contacto">Teléfono o email</label>
+              <label htmlFor="booking-contacto">Teléfono o email</label>
               <input
-                id="contacto"
+                id="booking-contacto"
                 type="text"
                 value={contacto}
                 onChange={(e) => setContacto(e.target.value)}

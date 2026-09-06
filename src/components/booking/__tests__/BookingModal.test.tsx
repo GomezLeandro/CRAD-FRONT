@@ -33,23 +33,7 @@ describe('BookingModal', () => {
   });
 
   it('envía el turno con los datos correctos y muestra confirmación', async () => {
-    crearTurnoMock.mockResolvedValue({
-      ok: true,
-      data: {
-        id: 't1',
-        rubro: 'Plomería',
-        problema: 'Se tapó la pileta y pierde agua por abajo.',
-        direccion: 'Av. San Martín 1234',
-        contacto: '11-2237-0857',
-        fecha: '2026-08-10',
-        horario: '11:30',
-        urgente: false,
-        estado: 'pendiente',
-        createdAt: '2026-08-01T00:00:00Z',
-        updatedAt: '2026-08-01T00:00:00Z',
-        confirmadoPor: null,
-      },
-    });
+    crearTurnoMock.mockResolvedValue({ ok: true, data: null });
 
     const user = userEvent.setup();
     renderModal();
