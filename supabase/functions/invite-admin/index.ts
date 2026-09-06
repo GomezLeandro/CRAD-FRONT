@@ -93,6 +93,12 @@ Deno.serve(async (req: Request) => {
 
   const { data, error } = await adminClient.auth.admin.inviteUserByEmail(email, {
     data: { nombre },
+    // Sin esto, Supabase arma el link con el "Site URL" configurado en el
+    // dashboard (Authentication > URL Configuration) — si ese sigue en
+    // localhost (default de desarrollo), el link del mail rompe en
+    // producción. Acá lo fijamos explícito a la página real que ya sabe
+    // recibir el link de invitación/recuperación.
+    redirectTo: 'https://www.grupocrad.com.ar/admin/reset-password',
   });
 
   if (error || !data.user) {
