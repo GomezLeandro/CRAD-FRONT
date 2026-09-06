@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { listarServiciosPublicos } from '../../services/serviciosService';
 import { BookingModal } from '../booking/BookingModal';
+import { RubroIcon } from '../icons/RubroIcon';
 import type { Servicio } from '../../types/domain';
 import styles from './Servicios.module.css';
 
@@ -42,6 +43,13 @@ export function Servicios() {
           <div className={styles.grid}>
             {servicios.map((s) => (
               <div key={s.id} className={styles.card}>
+                <div className={styles.icon}>
+                  {s.iconoUrl ? (
+                    <img src={s.iconoUrl} alt="" width={34} height={34} />
+                  ) : (
+                    <RubroIcon rubroKey={s.rubroKey} />
+                  )}
+                </div>
                 <p className={styles.title}>{s.nombre}</p>
                 <p className={styles.desc}>{s.descripcion}</p>
                 <button
@@ -53,6 +61,15 @@ export function Servicios() {
               </div>
             ))}
           </div>
+        )}
+
+        {!loading && !error && (
+          <p className={styles.bridge}>
+            ¿Es un proyecto de cero?{' '}
+            <a href="#obra" className={styles.bridgeGo}>
+              Ver sección Obra →
+            </a>
+          </p>
         )}
       </div>
 

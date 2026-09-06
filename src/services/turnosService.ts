@@ -128,6 +128,35 @@ export async function listarTurnos(
   return { ok: true, data: data.map(mapRow) };
 }
 
+function toISODate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Turnos confirmados de hoy a los próximos `dias` días, para la agenda del dashboard. */
+export async function listarAgendaSemana(dias = 7): Promise<ServiceResult<Turno[]>> {
+  const hoy = new Date();
+  const hasta = new Date(hoy);
+  hasta.setDate(hasta.getDate() + dias - 1);
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('*')
+    .eq('estado', 'confirmado')
+    .gte('fecha', toISODate(hoy))
+    .lte('fecha', toISODate(hasta))
+    .order('fecha', { ascending: true })
+    .order('horario', { ascending: true })
+    .returns<TurnoRow[]>();
+
+  if (error) {
+    return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
+  }
+  return { ok: true, data: data.map(mapRow) };
+}
+
 /**
  * Confirma o rechaza un turno. Solo admin/superadmin pueden ejecutar
  * este UPDATE (enforced por RLS). `confirmado_por` lo completa un

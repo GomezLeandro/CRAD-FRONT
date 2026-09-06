@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LogoMark } from '../icons/LogoMark';
 import styles from './Nav.module.css';
 
 const LINKS = [
@@ -58,24 +59,5 @@ export function Nav() {
         ))}
       </nav>
     </>
-  );
-}
-
-function LogoMark() {
-  return (
-    <svg viewBox="60 46 305 134" width="34" height="34" aria-hidden="true">
-      <path
-        d="M65 178V96l86-46 86 46v82"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="10"
-      />
-      <path
-        d="M151 96l60 32v50"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="10"
-      />
-    </svg>
   );
 }

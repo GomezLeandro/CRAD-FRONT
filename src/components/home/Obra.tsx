@@ -16,7 +16,7 @@ export function Obra() {
         </div>
       </div>
       <div className={styles.contentRow}>
-        <div className="wrap">
+        <div className={`wrap ${styles.contentInner}`}>
           <div className={styles.cols}>
             <div className={styles.textCol}>
               <h3 className={styles.subtitle}>
@@ -46,6 +46,8 @@ export function Obra() {
                 Contanos tu proyecto
               </a>
             </div>
+            {/* Panel de foto real pendiente — el cliente todavía no la mandó.
+                Cuando llegue: reemplazar por <img src={obraFoto} alt="Obra en construcción" />. */}
             <div className={styles.visual} aria-hidden="true" />
           </div>
         </div>

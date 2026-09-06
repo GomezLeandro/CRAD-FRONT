@@ -4,6 +4,16 @@
   position: relative;
 }
 
+.heroGridBg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.6;
+}
+
 .inner {
   position: relative;
   min-height: calc(100vh - 93px);
@@ -28,15 +38,23 @@
 }
 
 .sub {
-  color: #7fa8ce;
-  font-size: 16px;
-  margin-bottom: 14px;
+  color: var(--blue-soft);
+  font-size: 18px;
+  line-height: 1.5;
+  margin-top: 20px;
 }
 
 .strong {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
-  margin-bottom: 26px;
+  margin-top: 4px;
+}
+
+.heroCta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 26px;
 }
 
 .visual {
@@ -52,6 +70,29 @@
   width: 300px;
   height: 368px;
   opacity: 0.9;
+}
+
+.dims {
+  position: absolute;
+  top: 4px;
+  right: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--blue-soft);
+}
+
+.dims .r {
+  width: 24px;
+  height: 1px;
+  background: var(--blue-soft);
+}
+
+.dims2 {
+  top: auto;
+  bottom: -26px;
+  right: 2px;
 }
 
 @media (max-width: 960px) {

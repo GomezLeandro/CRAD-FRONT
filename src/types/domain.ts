@@ -11,6 +11,7 @@ export interface Profile {
   nombre: string;
   role: UserRole;
   createdAt: string;
+  avatarUrl: string | null;
 }
 
 export type TurnoEstado = 'pendiente' | 'confirmado' | 'rechazado' | 'completado';
@@ -72,6 +73,8 @@ export interface Factura {
   fechaPago: string | null;
   createdBy: string;
   createdAt: string;
+  /** Gasto de materiales cargado junto con la factura (0 si no se cargó ninguno). */
+  gastoMateriales: number;
 }
 
 export interface NuevaFacturaInput {
@@ -80,6 +83,27 @@ export interface NuevaFacturaInput {
   concepto: string;
   monto: number;
   fechaEmision: string;
+  /** Opcional: si se carga, además de la factura se registra un gasto "Materiales" por este monto. */
+  gastoMateriales?: number;
+}
+
+export interface Gasto {
+  id: string;
+  concepto: string;
+  categoria: string;
+  monto: number;
+  fecha: string;
+  createdBy: string;
+  createdAt: string;
+  /** Si el gasto se generó al cargar una factura, referencia a esa factura. */
+  facturaId: string | null;
+}
+
+export interface NuevoGastoInput {
+  concepto: string;
+  categoria: string;
+  monto: number;
+  fecha: string;
 }
 
 export interface Trabajo {
@@ -97,6 +121,7 @@ export interface Servicio {
   rubroKey: string;
   nombre: string;
   descripcion: string;
+  iconoUrl: string | null;
   orden: number;
   activo: boolean;
 }

@@ -60,15 +60,57 @@ export const loginSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
 
+export const recoverPasswordSchema = z.object({
+  email: z.string().trim().email('Email inválido').max(200),
+});
+
+export type RecoverPasswordFormValues = z.infer<typeof recoverPasswordSchema>;
+
+export const updatePasswordSchema = z.object({
+  password: z.string().min(8, 'Mínimo 8 caracteres').max(200),
+});
+
+export type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>;
+
+export const actualizarEmailSchema = z.object({
+  email: z.string().trim().email('Email inválido').max(200),
+});
+
+export type ActualizarEmailFormValues = z.infer<typeof actualizarEmailSchema>;
+
+export const actualizarNombrePerfilSchema = z.object({
+  nombre: z.string().trim().min(2, 'Ingresá tu nombre').max(100),
+});
+
+export type ActualizarNombrePerfilFormValues = z.infer<typeof actualizarNombrePerfilSchema>;
+
+export const invitarUsuarioSchema = z.object({
+  nombre: z.string().trim().min(2, 'Ingresá el nombre').max(100),
+  email: z.string().trim().email('Email inválido').max(200),
+  role: z.enum(['admin', 'superadmin']),
+});
+
+export type InvitarUsuarioFormValues = z.infer<typeof invitarUsuarioSchema>;
+
 export const nuevaFacturaSchema = z.object({
   turnoId: z.string().uuid().optional().nullable(),
   clienteNombre: z.string().trim().min(2).max(150),
   concepto: z.string().trim().min(2).max(300),
   monto: z.number().positive('El monto debe ser mayor a 0').max(100_000_000),
   fechaEmision: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha inválida'),
+  gastoMateriales: z.number().nonnegative('El gasto de materiales no puede ser negativo').max(100_000_000).optional(),
 });
 
 export type NuevaFacturaFormValues = z.infer<typeof nuevaFacturaSchema>;
+
+export const nuevoGastoSchema = z.object({
+  concepto: z.string().trim().min(2).max(300),
+  categoria: z.string().trim().min(2).max(60),
+  monto: z.number().positive('El monto debe ser mayor a 0').max(100_000_000),
+  fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha inválida'),
+});
+
+export type NuevoGastoFormValues = z.infer<typeof nuevoGastoSchema>;
 
 /**
  * Helper genérico: corre un schema de Zod y devuelve un resultado

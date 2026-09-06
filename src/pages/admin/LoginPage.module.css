@@ -1,17 +1,66 @@
 .page {
   min-height: 100vh;
   display: flex;
+}
+
+.brandPanel {
+  position: relative;
+  flex: 1 1 46%;
+  display: flex;
   align-items: center;
   justify-content: center;
   background: var(--bg-dark);
+  overflow: hidden;
+}
+
+.gridBg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.6;
+}
+
+.brandContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+}
+
+.brandContent svg {
+  margin-bottom: 22px;
+  opacity: 0.9;
+}
+
+.brandContent h2 {
+  font-size: 34px;
+  letter-spacing: 1px;
+}
+
+.brandContent p {
+  margin-top: 8px;
+  color: var(--blue-soft);
+  font-size: 14px;
+}
+
+.formPanel {
+  flex: 1 1 54%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
   padding: 20px;
 }
 
 .card {
-  background: #fff;
-  padding: 40px 36px;
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
 }
 
 .title {
@@ -26,12 +75,69 @@
   margin-bottom: 24px;
 }
 
-.card .btn {
+.card :global(.btn) {
   width: 100%;
-  margin-top: 8px;
+  margin-top: 20px;
   text-align: center;
 }
 
-.card .field {
-  margin-bottom: 16px;
+.card :global(.field) {
+  margin-bottom: 20px;
+}
+
+.card :global(.field):last-of-type {
+  margin-bottom: 0;
+}
+
+.linkBtn {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--blue-mid);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+.linkBtn:hover {
+  text-decoration: underline;
+}
+
+.success {
+  font-size: 13px;
+  color: var(--navy-deep);
+  background: #fff;
+  border-left: 3px solid var(--blue-mid);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 860px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .brandPanel {
+    flex: 0 0 auto;
+    padding: 40px 20px;
+  }
+
+  .brandContent svg {
+    width: 120px;
+    height: auto;
+    margin-bottom: 14px;
+  }
+
+  .brandContent h2 {
+    font-size: 26px;
+  }
+
+  .formPanel {
+    flex: 1 1 auto;
+    padding: 40px 20px;
+  }
 }

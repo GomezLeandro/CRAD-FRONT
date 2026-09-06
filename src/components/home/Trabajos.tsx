@@ -24,7 +24,12 @@ export function Trabajos() {
         <h2 className="section-title">Trabajos</h2>
         <div className={styles.gallery}>
           {trabajos.map((t) => (
-            <button key={t.id} className={styles.card} onClick={() => setSeleccionado(t)}>
+            <button
+              key={t.id}
+              className={styles.card}
+              style={t.imagenUrl ? { backgroundImage: `url(${t.imagenUrl})` } : undefined}
+              onClick={() => setSeleccionado(t)}
+            >
               <div className={styles.info}>
                 <p className={styles.t}>{t.titulo}</p>
                 <p className={styles.d}>{t.ubicacion}</p>
@@ -37,9 +42,18 @@ export function Trabajos() {
       <Modal open={seleccionado !== null} onClose={() => setSeleccionado(null)} maxWidth={620}>
         {seleccionado && (
           <div>
-            <div className={styles.modalImg}>
-              <span>Foto próximamente</span>
-            </div>
+            {seleccionado.imagenUrl ? (
+              <img
+                className={styles.modalPhoto}
+                src={seleccionado.imagenUrl}
+                alt={seleccionado.titulo}
+              />
+            ) : (
+              <div className={styles.modalImg}>
+                <PhotoIcon />
+                <span>Foto próximamente</span>
+              </div>
+            )}
             <div className={styles.modalHead}>
               <div className="eyebrow">
                 <span className="rule" />
@@ -52,5 +66,26 @@ export function Trabajos() {
         )}
       </Modal>
     </section>
+  );
+}
+
+function PhotoIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="34"
+      height="34"
+      fill="none"
+      stroke="#fff"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity="0.7"
+      aria-hidden="true"
+    >
+      <rect x="3" y="5" width="18" height="14" rx="1" />
+      <circle cx="8.5" cy="10" r="1.5" />
+      <path d="M21 15l-5-5-9 9" />
+    </svg>
   );
 }

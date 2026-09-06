@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const returnsMock = vi.fn();
+const gastosReturnsMock = vi.fn(() => Promise.resolve({ data: [], error: null }));
 const orderMock = vi.fn(() => ({ returns: returnsMock }));
-const selectMock = vi.fn(() => ({ order: orderMock }));
+const inMock = vi.fn(() => ({ returns: gastosReturnsMock }));
+const selectMock = vi.fn(() => ({ order: orderMock, in: inMock }));
 const fromMock = vi.fn((..._args: unknown[]) => ({ select: selectMock }));
 
 vi.mock('../../lib/supabaseClient', () => ({

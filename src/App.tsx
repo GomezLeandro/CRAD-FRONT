@@ -1,13 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/admin/LoginPage';
-import { DashboardPage } from './pages/admin/DashboardPage';
+import { ResetPasswordPage } from './pages/admin/ResetPasswordPage';
 import { TurnosPage } from './pages/admin/TurnosPage';
 import { MensajesPage } from './pages/admin/MensajesPage';
 import { FacturasPage } from './pages/admin/FacturasPage';
 import { TrabajosAdminPage } from './pages/admin/TrabajosAdminPage';
 import { ServiciosAdminPage } from './pages/admin/ServiciosAdminPage';
 import { UsuariosAdminPage } from './pages/admin/UsuariosAdminPage';
+import { GastosAdminPage } from './pages/admin/GastosAdminPage';
+import { FinanzasDashboardPage } from './pages/admin/FinanzasDashboardPage';
+import { PerfilPage } from './pages/admin/PerfilPage';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { ProtectedRoute } from './components/admin/ProtectedRoute';
 
@@ -17,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/admin/login" element={<LoginPage />} />
+        <Route path="/admin/reset-password" element={<ResetPasswordPage />} />
 
         <Route
           path="/admin"
@@ -26,10 +30,12 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<DashboardPage />} />
+          <Route index element={<FinanzasDashboardPage />} />
           <Route path="turnos" element={<TurnosPage />} />
           <Route path="mensajes" element={<MensajesPage />} />
           <Route path="facturas" element={<FacturasPage />} />
+          <Route path="gastos" element={<GastosAdminPage />} />
+          <Route path="perfil" element={<PerfilPage />} />
           <Route
             path="trabajos"
             element={

@@ -15,6 +15,7 @@ export function FacturasPage() {
   const [clienteNombre, setClienteNombre] = useState('');
   const [concepto, setConcepto] = useState('');
   const [monto, setMonto] = useState('');
+  const [gastoMateriales, setGastoMateriales] = useState('');
   const [fechaEmision, setFechaEmision] = useState(() => new Date().toISOString().slice(0, 10));
   const [error, setError] = useState('');
 
@@ -36,6 +37,7 @@ export function FacturasPage() {
       concepto,
       monto: Number(monto),
       fechaEmision,
+      gastoMateriales: gastoMateriales ? Number(gastoMateriales) : undefined,
     });
     if (!result.ok) {
       setError(result.error.message);
@@ -44,6 +46,7 @@ export function FacturasPage() {
     setClienteNombre('');
     setConcepto('');
     setMonto('');
+    setGastoMateriales('');
     cargar();
   }
 
@@ -107,6 +110,18 @@ export function FacturasPage() {
             />
           </div>
           <div className="field">
+            <label htmlFor="gastoMateriales">Gasto de materiales (opcional)</label>
+            <input
+              id="gastoMateriales"
+              type="number"
+              min="0"
+              step="0.01"
+              value={gastoMateriales}
+              onChange={(e) => setGastoMateriales(e.target.value)}
+              placeholder="Se descuenta solo de la ganancia"
+            />
+          </div>
+          <div className="field">
             <label htmlFor="fechaEmision">Fecha</label>
             <input
               id="fechaEmision"
@@ -129,6 +144,9 @@ export function FacturasPage() {
             <div>
               <strong>{f.clienteNombre}</strong>
               <p className={styles.concepto}>{f.concepto}</p>
+              {f.gastoMateriales > 0 && (
+                <p className={styles.materiales}>Materiales: ${f.gastoMateriales.toLocaleString('es-AR')}</p>
+              )}
             </div>
             <span>${f.monto.toLocaleString('es-AR')}</span>
             <span className={f.estado === 'pagada' ? styles.pagada : styles.pendiente}>

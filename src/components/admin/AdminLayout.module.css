@@ -50,10 +50,42 @@
   border-top: 0.5px solid var(--grid-line);
 }
 
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.userLink:hover .userInfo {
+  color: #fff;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarInitials {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--blue-mid);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .userInfo {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 10px;
   text-transform: capitalize;
 }
 

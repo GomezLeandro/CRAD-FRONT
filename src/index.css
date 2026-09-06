@@ -3,11 +3,16 @@
   --navy-deep: #042c53;
   --bg-dark: #0a1520;
   --blue-mid: #4a7baa;
+  --blue-soft: #5a7590;
   --paper: #f5f7f9;
   --steel: #8b95a1;
   --line: #d3d1c7;
   --ink: #16202b;
   --grid-line: #1c2c3d;
+  --good: #1e8e3e;
+  --warn: #f2a900;
+  --critical: #d93025;
+  --line-rgb: 211, 209, 199;
 }
 
 * {

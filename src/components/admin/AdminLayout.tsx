@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logout } from '../../services/authService';
 import styles from './AdminLayout.module.css';
@@ -12,10 +12,9 @@ export function AdminLayout() {
         <div className={styles.brand}>CRAD Admin</div>
         <nav className={styles.nav}>
           <NavLink to="/admin" end>
-            Dashboard
+            Panel principal
           </NavLink>
           <NavLink to="/admin/turnos">Turnos</NavLink>
-          <NavLink to="/admin/mensajes">Mensajes</NavLink>
           <NavLink to="/admin/facturas">Facturación</NavLink>
           {profile?.role === 'superadmin' && (
             <>
@@ -27,9 +26,23 @@ export function AdminLayout() {
           )}
         </nav>
         <div className={styles.footer}>
-          <p className={styles.userInfo}>
-            {profile?.nombre} · <span>{profile?.role}</span>
-          </p>
+          <Link to="/admin/perfil" className={styles.userLink}>
+            {profile?.avatarUrl ? (
+              <img src={profile.avatarUrl} alt="" className={styles.avatar} />
+            ) : (
+              <span className={styles.avatarInitials}>
+                {(profile?.nombre ?? '?')
+                  .trim()
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((p) => p[0]?.toUpperCase())
+                  .join('')}
+              </span>
+            )}
+            <span className={styles.userInfo}>
+              {profile?.nombre} · <span>{profile?.role}</span>
+            </span>
+          </Link>
           <button className={styles.logoutBtn} onClick={() => logout()}>
             Cerrar sesión
           </button>

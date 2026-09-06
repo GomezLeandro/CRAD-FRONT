@@ -13,6 +13,9 @@
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 22px;
   font-weight: 700;
 }
@@ -20,12 +23,20 @@
 .contact {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.75);
 }
 
+.contact div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .bottom {
+  display: flex;
+  justify-content: space-between;
   padding-top: 20px;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
@@ -35,5 +46,13 @@
   .top {
     flex-direction: column;
     gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bottom {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
   }
 }

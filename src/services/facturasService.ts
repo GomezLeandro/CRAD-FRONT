@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabaseClient';
 import { nuevaFacturaSchema } from '../lib/validation';
+import { crearGastoDeFactura } from './gastosService';
 import type {
   Factura,
   FacturaEstado,
@@ -20,7 +21,7 @@ interface FacturaRow {
   created_at: string;
 }
 
-function mapRow(row: FacturaRow): Factura {
+function mapRow(row: FacturaRow, gastoMateriales = 0): Factura {
   return {
     id: row.id,
     turnoId: row.turno_id,
@@ -32,7 +33,32 @@ function mapRow(row: FacturaRow): Factura {
     fechaPago: row.fecha_pago,
     createdBy: row.created_by,
     createdAt: row.created_at,
+    gastoMateriales,
   };
+}
+
+/** Suma, por factura, los gastos de materiales que se cargaron junto con ella. */
+async function obtenerGastosMaterialesPorFactura(
+  facturaIds: string[]
+): Promise<ServiceResult<Map<string, number>>> {
+  if (facturaIds.length === 0) return { ok: true, data: new Map() };
+
+  const { data, error } = await supabase
+    .from('gastos')
+    .select('factura_id, monto')
+    .in('factura_id', facturaIds)
+    .returns<{ factura_id: string | null; monto: number }[]>();
+
+  if (error) {
+    return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
+  }
+
+  const totales = new Map<string, number>();
+  for (const g of data) {
+    if (!g.factura_id) continue;
+    totales.set(g.factura_id, (totales.get(g.factura_id) ?? 0) + Number(g.monto));
+  }
+  return { ok: true, data: totales };
 }
 
 const TABLE = 'facturas';
@@ -49,6 +75,13 @@ export async function crearFactura(
     };
   }
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { ok: false, error: { code: 'UNAUTHORIZED', message: 'No hay sesión activa.' } };
+  }
+
   const { data, error } = await supabase
     .from(TABLE)
     .insert({
@@ -58,6 +91,7 @@ export async function crearFactura(
       monto: parsed.data.monto,
       fecha_emision: parsed.data.fechaEmision,
       estado: 'pendiente',
+      created_by: user.id,
     })
     .select()
     .single<FacturaRow>();
@@ -65,7 +99,24 @@ export async function crearFactura(
   if (error) {
     return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
   }
-  return { ok: true, data: mapRow(data) };
+
+  const gastoMateriales = parsed.data.gastoMateriales ?? 0;
+  if (gastoMateriales > 0) {
+    const gastoResult = await crearGastoDeFactura(
+      data.id,
+      parsed.data.clienteNombre,
+      gastoMateriales,
+      parsed.data.fechaEmision,
+      user.id
+    );
+    // La factura ya se creó; si el gasto vinculado falla no la invalidamos,
+    // pero avisamos para que se cargue a mano desde Gastos si hace falta.
+    if (!gastoResult.ok) {
+      console.error('No se pudo registrar el gasto de materiales:', gastoResult.error.message);
+    }
+  }
+
+  return { ok: true, data: mapRow(data, gastoMateriales) };
 }
 
 export async function listarFacturas(): Promise<ServiceResult<Factura[]>> {
@@ -78,7 +129,11 @@ export async function listarFacturas(): Promise<ServiceResult<Factura[]>> {
   if (error) {
     return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
   }
-  return { ok: true, data: data.map(mapRow) };
+
+  const totalesRes = await obtenerGastosMaterialesPorFactura(data.map((f) => f.id));
+  const totales = totalesRes.ok ? totalesRes.data : new Map<string, number>();
+
+  return { ok: true, data: data.map((row) => mapRow(row, totales.get(row.id) ?? 0)) };
 }
 
 export async function marcarFacturaPagada(

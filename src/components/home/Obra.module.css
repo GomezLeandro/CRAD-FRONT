@@ -8,7 +8,27 @@
 }
 
 .contentRow {
+  position: relative;
   padding: 20px 0 60px;
+  overflow: hidden;
+}
+
+.contentRow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 34px 34px;
+  opacity: 0.35;
+  mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 90%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 40%, transparent 90%);
+}
+
+.contentInner {
+  position: relative;
+  z-index: 1;
 }
 
 .cols {
@@ -79,6 +99,7 @@
 .visual {
   background: var(--navy-deep);
   min-height: 420px;
+  margin-right: calc(-44px - max(0px, (100vw - 1180px) / 2));
 }
 
 @media (max-width: 960px) {
@@ -90,5 +111,6 @@
   }
   .visual {
     min-height: 320px;
+    margin-right: 0;
   }
 }
