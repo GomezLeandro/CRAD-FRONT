@@ -1,4 +1,3 @@
-import { LogoMark } from '../icons/LogoMark';
 import styles from './Footer.module.css';
 
 export function Footer() {
@@ -7,8 +6,7 @@ export function Footer() {
       <div className="wrap">
         <div className={styles.top}>
           <div className={styles.brand}>
-            <LogoMark size={26} />
-            <span>CRAD</span>
+            <img src="/Logo.png" alt="CRAD Construcciones y Reparaciones" className={styles.logoImg} />
           </div>
           <div className={styles.contact}>
             <div>

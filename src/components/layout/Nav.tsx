@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { LogoMark } from '../icons/LogoMark';
 import styles from './Nav.module.css';
 
 const LINKS = [
@@ -17,11 +16,7 @@ export function Nav() {
       <header className={styles.nav}>
         <div className={`wrap ${styles.inner}`}>
           <a href="#top" className={styles.logo} aria-label="CRAD - inicio">
-            <LogoMark />
-            <span>
-              CRAD
-              <small>Construcciones y Reparaciones</small>
-            </span>
+            <img src="/Logo.png" alt="CRAD Construcciones y Reparaciones" className={styles.logoImg} />
           </a>
           <nav className={styles.links}>
             {LINKS.map((l) => (

@@ -157,28 +157,35 @@ export function TrabajosAdminPage() {
 
       <div className={styles.list}>
         {trabajos.map((t) => (
-          <div key={t.id} className={styles.row}>
-            {t.imagenUrl && (
-              <img src={t.imagenUrl} alt="" width={56} height={42} style={{ objectFit: 'cover' }} />
-            )}
-            <div>
-              <input
-                defaultValue={t.titulo}
-                style={{ fontWeight: 700, border: 'none', background: 'none', padding: 0, width: '100%' }}
-                onBlur={(e) => guardarCampo(t, 'titulo', e.target.value)}
-              />
-              <input
-                defaultValue={t.ubicacion}
-                className={styles.sub}
-                style={{ border: 'none', background: 'none', padding: 0, width: '100%' }}
-                onBlur={(e) => guardarCampo(t, 'ubicacion', e.target.value)}
-              />
-              <textarea
-                defaultValue={t.descripcion}
-                rows={2}
-                onBlur={(e) => guardarCampo(t, 'descripcion', e.target.value)}
-              />
-              <label className={styles.sub} style={{ cursor: 'pointer', display: 'inline-block' }}>
+          <div key={t.id} className={styles.itemCard}>
+            <div className={styles.itemMain}>
+              <div className={styles.itemMediaPhoto}>
+                {t.imagenUrl ? <img src={t.imagenUrl} alt="" /> : '—'}
+              </div>
+              <div className={styles.itemFields}>
+                <div className="field">
+                  <label>Título</label>
+                  <input defaultValue={t.titulo} onBlur={(e) => guardarCampo(t, 'titulo', e.target.value)} />
+                </div>
+                <div className="field">
+                  <label>Ubicación</label>
+                  <input
+                    defaultValue={t.ubicacion}
+                    onBlur={(e) => guardarCampo(t, 'ubicacion', e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>Descripción</label>
+                  <textarea
+                    defaultValue={t.descripcion}
+                    rows={2}
+                    onBlur={(e) => guardarCampo(t, 'descripcion', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.itemActions}>
+              <label className={styles.linkBtn}>
                 Cambiar foto
                 <input
                   type="file"
@@ -187,13 +194,15 @@ export function TrabajosAdminPage() {
                   style={{ display: 'none' }}
                 />
               </label>
+              <div className={styles.itemActionsRight}>
+                <button className={styles.toggle} onClick={() => toggleActivo(t)}>
+                  {t.activo ? 'Ocultar' : 'Publicar'}
+                </button>
+                <button className={styles.deleteBtn} onClick={() => eliminar(t.id)}>
+                  Eliminar
+                </button>
+              </div>
             </div>
-            <button className={styles.toggle} onClick={() => toggleActivo(t)}>
-              {t.activo ? 'Ocultar' : 'Publicar'}
-            </button>
-            <button className={styles.deleteBtn} onClick={() => eliminar(t.id)}>
-              Eliminar
-            </button>
           </div>
         ))}
       </div>

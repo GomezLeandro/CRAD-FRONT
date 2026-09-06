@@ -163,28 +163,35 @@ export function ServiciosAdminPage() {
 
       <div className={styles.list}>
         {servicios.map((s) => (
-          <div key={s.id} className={styles.row}>
-            {s.iconoUrl && (
-              <img src={s.iconoUrl} alt="" width={34} height={34} style={{ objectFit: 'contain' }} />
-            )}
-            <div>
-              <input
-                defaultValue={s.nombre}
-                style={{ fontWeight: 700, border: 'none', background: 'none', padding: 0, width: '100%' }}
-                onBlur={(e) => guardarCampo(s, 'nombre', e.target.value)}
-              />
-              <input
-                defaultValue={s.rubroKey}
-                className={styles.sub}
-                style={{ border: 'none', background: 'none', padding: 0, width: '100%' }}
-                onBlur={(e) => guardarCampo(s, 'rubroKey', e.target.value)}
-              />
-              <textarea
-                defaultValue={s.descripcion}
-                rows={2}
-                onBlur={(e) => guardarCampo(s, 'descripcion', e.target.value)}
-              />
-              <label className={styles.sub} style={{ cursor: 'pointer', display: 'inline-block' }}>
+          <div key={s.id} className={styles.itemCard}>
+            <div className={styles.itemMain}>
+              <div className={styles.itemMediaIcon}>
+                {s.iconoUrl ? <img src={s.iconoUrl} alt="" /> : '—'}
+              </div>
+              <div className={styles.itemFields}>
+                <div className="field">
+                  <label>Nombre</label>
+                  <input defaultValue={s.nombre} onBlur={(e) => guardarCampo(s, 'nombre', e.target.value)} />
+                </div>
+                <div className="field">
+                  <label>Rubro (clave)</label>
+                  <input
+                    defaultValue={s.rubroKey}
+                    onBlur={(e) => guardarCampo(s, 'rubroKey', e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>Descripción</label>
+                  <textarea
+                    defaultValue={s.descripcion}
+                    rows={2}
+                    onBlur={(e) => guardarCampo(s, 'descripcion', e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.itemActions}>
+              <label className={styles.linkBtn}>
                 Cambiar ícono
                 <input
                   type="file"
@@ -193,13 +200,15 @@ export function ServiciosAdminPage() {
                   style={{ display: 'none' }}
                 />
               </label>
+              <div className={styles.itemActionsRight}>
+                <button className={styles.toggle} onClick={() => toggleActivo(s)}>
+                  {s.activo ? 'Ocultar' : 'Publicar'}
+                </button>
+                <button className={styles.deleteBtn} onClick={() => eliminar(s.id)}>
+                  Eliminar
+                </button>
+              </div>
             </div>
-            <button className={styles.toggle} onClick={() => toggleActivo(s)}>
-              {s.activo ? 'Ocultar' : 'Publicar'}
-            </button>
-            <button className={styles.deleteBtn} onClick={() => eliminar(s.id)}>
-              Eliminar
-            </button>
           </div>
         ))}
       </div>
