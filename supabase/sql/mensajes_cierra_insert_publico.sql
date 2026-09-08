@@ -1,0 +1,11 @@
+-- La tabla "mensajes" quedó de un formulario de contacto que ya no
+-- existe en el sitio (se sacó "Contacto" del nav, y crearMensaje() no
+-- lo llama ningún componente). Mantener la inserción pública abierta
+-- es una superficie de ataque sin ningún beneficio: nadie legítimo la
+-- usa, pero un script sí podría seguir spameándola directo por la API.
+--
+-- Se cierra la policy de INSERT público. Las de SELECT/UPDATE
+-- admin-only quedan igual, así que el bandeja del panel (si algún día
+-- se reactiva con un formulario real) sigue funcionando — solo hay que
+-- volver a crear una policy de INSERT cuando exista ese formulario.
+drop policy if exists mensajes_insert_publico on mensajes;
