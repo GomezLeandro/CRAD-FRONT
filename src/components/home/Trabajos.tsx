@@ -20,7 +20,7 @@ export function Trabajos() {
 
   return (
     <section id="trabajos" className={styles.section}>
-      <div className="wrap">
+      <div className={`wrap ${styles.content}`}>
         <h2 className="section-title">Trabajos</h2>
         <div className={styles.gallery}>
           {trabajos.map((t) => (
