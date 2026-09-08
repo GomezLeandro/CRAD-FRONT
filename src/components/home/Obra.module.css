@@ -39,6 +39,7 @@
 }
 
 .textCol {
+  padding-left: calc(max(0px, (100vw - 1180px) / 2) + 44px);
   padding-right: 60px;
   display: flex;
   flex-direction: column;
@@ -110,10 +111,17 @@
     grid-template-columns: 1fr;
   }
   .textCol {
-    padding-right: 0;
+    padding-right: calc(max(0px, (100vw - 1180px) / 2) + 44px);
   }
   .visual {
     width: 100%;
     height: 340px;
+  }
+}
+
+@media (max-width: 640px) {
+  .textCol {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }

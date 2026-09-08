@@ -20,7 +20,7 @@ export function Obra() {
         </div>
       </div>
       <div className={styles.contentRow}>
-        <div className={`wrap ${styles.contentInner}`}>
+        <div className={styles.contentInner}>
           <div className={styles.cols}>
             <div className={styles.textCol}>
               <h3 className={styles.subtitle}>
