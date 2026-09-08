@@ -5,7 +5,6 @@ const LINKS = [
   { href: '#servicios', label: 'Servicios' },
   { href: '#obra', label: 'Obra' },
   { href: '#trabajos', label: 'Trabajos' },
-  { href: '#contacto', label: 'Contacto' },
 ];
 
 export function Nav() {
