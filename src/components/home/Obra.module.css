@@ -18,7 +18,7 @@
   position: absolute;
   inset: 0;
   background-image: url('/Malla cuadricula arquitectura 1.png');
-  background-size: 100% 100%;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.45;
@@ -109,6 +109,7 @@
 @media (max-width: 960px) {
   .cols {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
   .textCol {
     padding-right: calc(max(0px, (100vw - 1180px) / 2) + 44px);
