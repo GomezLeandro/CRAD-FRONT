@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logout } from '../../services/authService';
-import { contarMensajesNoLeidos } from '../../services/mensajesService';
+import { contarTurnosPendientes } from '../../services/turnosService';
 import { contarSolicitudesObraNoLeidas } from '../../services/solicitudesObraService';
 import styles from './AdminLayout.module.css';
 
@@ -16,19 +16,19 @@ function NavBadge({ count }: { count: number }) {
 
 export function AdminLayout() {
   const { profile } = useAuth();
-  const [mensajesNoLeidos, setMensajesNoLeidos] = useState(0);
+  const [turnosPendientes, setTurnosPendientes] = useState(0);
   const [obraNoLeidas, setObraNoLeidas] = useState(0);
 
   useEffect(() => {
     let cancelado = false;
 
     async function refrescar() {
-      const [mensajes, obra] = await Promise.all([
-        contarMensajesNoLeidos(),
+      const [turnos, obra] = await Promise.all([
+        contarTurnosPendientes(),
         contarSolicitudesObraNoLeidas(),
       ]);
       if (cancelado) return;
-      if (mensajes.ok) setMensajesNoLeidos(mensajes.data);
+      if (turnos.ok) setTurnosPendientes(turnos.data);
       if (obra.ok) setObraNoLeidas(obra.data);
     }
 
@@ -48,9 +48,8 @@ export function AdminLayout() {
           <NavLink to="/admin" end>
             Panel principal
           </NavLink>
-          <NavLink to="/admin/turnos">Turnos</NavLink>
-          <NavLink to="/admin/mensajes">
-            Mensajes <NavBadge count={mensajesNoLeidos} />
+          <NavLink to="/admin/turnos">
+            Turnos <NavBadge count={turnosPendientes} />
           </NavLink>
           <NavLink to="/admin/solicitudes-obra">
             Solicitudes de obra <NavBadge count={obraNoLeidas} />

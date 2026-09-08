@@ -121,6 +121,19 @@ export async function listarHorariosOcupados(
   return { ok: true, data: (data as string[] | null) ?? [] };
 }
 
+/** Para el badge del panel admin: turnos que todavía no se revisaron. */
+export async function contarTurnosPendientes(): Promise<ServiceResult<number>> {
+  const { count, error } = await supabase
+    .from(TABLE)
+    .select('id', { count: 'exact', head: true })
+    .eq('estado', 'pendiente');
+
+  if (error) {
+    return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
+  }
+  return { ok: true, data: count ?? 0 };
+}
+
 /**
  * Lista turnos para el panel admin. Requiere sesión — si el usuario no
  * está autenticado o no tiene rol admin/superadmin, RLS devuelve 0 filas
