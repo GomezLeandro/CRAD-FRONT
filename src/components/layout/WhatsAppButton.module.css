@@ -2,8 +2,8 @@
   position: fixed;
   right: 24px;
   bottom: 24px;
-  width: 56px;
-  height: 56px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   background: #25d366;
   display: flex;
@@ -11,17 +11,38 @@
   justify-content: center;
   z-index: 50;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
+  opacity: 0;
+  animation: wa-entrance 0.5s ease-out 2s forwards;
 }
 
 .button:hover {
   background: #1ebe5b;
+  transform: scale(1.05);
+}
+
+@keyframes wa-entrance {
+  from {
+    opacity: 0;
+    transform: scale(0.3) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 @media (max-width: 640px) {
   .button {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
     right: 16px;
     bottom: 16px;
   }

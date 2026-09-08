@@ -26,7 +26,14 @@ export function Footer() {
         </div>
         <div className={styles.bottom}>
           <span>© {new Date().getFullYear()} CRAD Construcciones y Reparaciones</span>
-          <span>Instagram · WhatsApp</span>
+          <a
+            href="https://www.instagram.com/crad.construcciones/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.instagram}
+          >
+            Instagram
+          </a>
         </div>
         <div className={styles.credit}>
           Desarrollado por{' '}
