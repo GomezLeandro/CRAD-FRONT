@@ -100,8 +100,7 @@
   background: var(--navy-deep);
   margin-right: calc(-44px - max(0px, (100vw - 1180px) / 2));
   width: 100%;
-  align-self: center;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   object-fit: cover;
   object-position: center 30%;
   display: block;
@@ -116,6 +115,6 @@
   }
   .visual {
     margin-right: 0;
-    aspect-ratio: 16 / 9;
+    height: 340px;
   }
 }
