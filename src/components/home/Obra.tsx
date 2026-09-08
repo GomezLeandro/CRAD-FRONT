@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { ObraModal } from './ObraModal';
 import styles from './Obra.module.css';
 
 const PASOS = [
@@ -8,6 +10,8 @@ const PASOS = [
 ];
 
 export function Obra() {
+  const [modalAbierto, setModalAbierto] = useState(false);
+
   return (
     <section id="obra" className={styles.section}>
       <div className={styles.titleRow}>
@@ -42,14 +46,19 @@ export function Obra() {
                   </div>
                 ))}
               </div>
-              <a href="#servicios" className={`btn btn-navy ${styles.cta}`}>
+              <button
+                type="button"
+                className={`btn btn-navy ${styles.cta}`}
+                onClick={() => setModalAbierto(true)}
+              >
                 Contanos tu proyecto
-              </a>
+              </button>
             </div>
             <img src="/obra.jpeg" alt="Planos y proyecto de obra" className={styles.visual} />
           </div>
         </div>
       </div>
+      <ObraModal open={modalAbierto} onClose={() => setModalAbierto(false)} />
     </section>
   );
 }

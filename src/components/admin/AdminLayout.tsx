@@ -1,10 +1,44 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { logout } from '../../services/authService';
+import { contarMensajesNoLeidos } from '../../services/mensajesService';
+import { contarSolicitudesObraNoLeidas } from '../../services/solicitudesObraService';
 import styles from './AdminLayout.module.css';
+
+/** Cada cuánto se refresca el conteo de no leídos en el sidebar. */
+const POLL_MS = 30_000;
+
+function NavBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return <span className={styles.badge}>{count > 99 ? '99+' : count}</span>;
+}
 
 export function AdminLayout() {
   const { profile } = useAuth();
+  const [mensajesNoLeidos, setMensajesNoLeidos] = useState(0);
+  const [obraNoLeidas, setObraNoLeidas] = useState(0);
+
+  useEffect(() => {
+    let cancelado = false;
+
+    async function refrescar() {
+      const [mensajes, obra] = await Promise.all([
+        contarMensajesNoLeidos(),
+        contarSolicitudesObraNoLeidas(),
+      ]);
+      if (cancelado) return;
+      if (mensajes.ok) setMensajesNoLeidos(mensajes.data);
+      if (obra.ok) setObraNoLeidas(obra.data);
+    }
+
+    refrescar();
+    const interval = setInterval(refrescar, POLL_MS);
+    return () => {
+      cancelado = true;
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <div className={styles.layout}>
@@ -15,6 +49,12 @@ export function AdminLayout() {
             Panel principal
           </NavLink>
           <NavLink to="/admin/turnos">Turnos</NavLink>
+          <NavLink to="/admin/mensajes">
+            Mensajes <NavBadge count={mensajesNoLeidos} />
+          </NavLink>
+          <NavLink to="/admin/solicitudes-obra">
+            Solicitudes de obra <NavBadge count={obraNoLeidas} />
+          </NavLink>
           <NavLink to="/admin/facturas">Facturación</NavLink>
           {profile?.role === 'superadmin' && (
             <>

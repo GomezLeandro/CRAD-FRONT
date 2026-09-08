@@ -37,6 +37,21 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #d64545;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .divider {
   padding: 16px 22px 6px;
   font-size: 10.5px;

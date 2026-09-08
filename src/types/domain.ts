@@ -44,6 +44,31 @@ export interface NuevoTurnoInput {
   website?: string;
 }
 
+export interface SolicitudObra {
+  id: string;
+  tipoProyecto: string;
+  superficie: number | null;
+  zona: string;
+  descripcion: string;
+  archivoUrl: string | null;
+  nombre: string;
+  contacto: string;
+  leido: boolean;
+  createdAt: string;
+}
+
+export interface NuevaSolicitudObraInput {
+  tipoProyecto: string;
+  superficie?: number | null;
+  zona: string;
+  descripcion: string;
+  archivoUrl?: string | null;
+  nombre: string;
+  contacto: string;
+  /** Campo honeypot anti-bot. Debe llegar vacío. Nunca se persiste. */
+  website?: string;
+}
+
 export interface Mensaje {
   id: string;
   nombre: string;

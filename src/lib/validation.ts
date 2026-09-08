@@ -37,6 +37,40 @@ export const nuevoTurnoSchema = z.object({
 
 export type NuevoTurnoFormValues = z.infer<typeof nuevoTurnoSchema>;
 
+export const TIPOS_PROYECTO = [
+  'Construcción nueva',
+  'Refacción o remodelación',
+  'Ampliación',
+  'Otro',
+] as const;
+
+export const nuevaSolicitudObraSchema = z.object({
+  tipoProyecto: z.enum(TIPOS_PROYECTO, { message: 'Elegí un tipo de proyecto' }),
+  superficie: z
+    .number()
+    .positive('La superficie debe ser mayor a 0')
+    .max(1_000_000)
+    .optional()
+    .nullable(),
+  zona: z.string().trim().min(2, 'Ingresá la zona del terreno').max(150),
+  descripcion: z
+    .string()
+    .trim()
+    .min(10, 'Contanos un poco más (mínimo 10 caracteres)')
+    .max(1500, 'Máximo 1500 caracteres'),
+  archivoUrl: z.string().url().optional().nullable(),
+  nombre: z.string().trim().min(2, 'Ingresá tu nombre').max(100),
+  contacto: z
+    .string()
+    .trim()
+    .min(6, 'Dejanos un teléfono o email')
+    .max(120)
+    .regex(contactoRegex, 'Ingresá un teléfono o email válido'),
+  website: z.string().max(0, 'Bot detectado').optional().or(z.literal('')),
+});
+
+export type NuevaSolicitudObraFormValues = z.infer<typeof nuevaSolicitudObraSchema>;
+
 export const nuevoMensajeSchema = z.object({
   nombre: z.string().trim().min(2, 'Ingresá tu nombre').max(100),
   contacto: z

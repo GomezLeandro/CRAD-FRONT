@@ -68,6 +68,19 @@ export async function listarMensajes(): Promise<ServiceResult<Mensaje[]>> {
   return { ok: true, data: data.map(mapRow) };
 }
 
+/** Para el badge del panel admin. */
+export async function contarMensajesNoLeidos(): Promise<ServiceResult<number>> {
+  const { count, error } = await supabase
+    .from(TABLE)
+    .select('id', { count: 'exact', head: true })
+    .eq('leido', false);
+
+  if (error) {
+    return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
+  }
+  return { ok: true, data: count ?? 0 };
+}
+
 export async function marcarMensajeLeido(
   id: string,
   leido: boolean

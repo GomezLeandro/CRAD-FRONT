@@ -4,6 +4,7 @@ import { LoginPage } from './pages/admin/LoginPage';
 import { ResetPasswordPage } from './pages/admin/ResetPasswordPage';
 import { TurnosPage } from './pages/admin/TurnosPage';
 import { MensajesPage } from './pages/admin/MensajesPage';
+import { SolicitudesObraPage } from './pages/admin/SolicitudesObraPage';
 import { FacturasPage } from './pages/admin/FacturasPage';
 import { TrabajosAdminPage } from './pages/admin/TrabajosAdminPage';
 import { ServiciosAdminPage } from './pages/admin/ServiciosAdminPage';
@@ -33,6 +34,7 @@ function App() {
           <Route index element={<FinanzasDashboardPage />} />
           <Route path="turnos" element={<TurnosPage />} />
           <Route path="mensajes" element={<MensajesPage />} />
+          <Route path="solicitudes-obra" element={<SolicitudesObraPage />} />
           <Route path="facturas" element={<FacturasPage />} />
           <Route path="gastos" element={<GastosAdminPage />} />
           <Route path="perfil" element={<PerfilPage />} />
