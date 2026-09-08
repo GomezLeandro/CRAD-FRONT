@@ -13,13 +13,31 @@ constraints, triggers). React solo da una buena experiencia de uso alrededor.
 - Roles (`admin` / `superadmin`) viven en la tabla `profiles`, verificados por
   las funciones `is_admin()` / `is_superadmin()` (SECURITY DEFINER, así evitan
   el problema de referencia circular al leer su propio rol).
-- **Nadie puede auto-promoverse**: no existe policy de UPDATE sobre `profiles`
-  para el propio usuario, solo para superadmin sobre terceros.
+- **Nadie puede auto-promoverse**: sí existe `profiles_update_self` (cada
+  usuario puede editar su propia fila, para nombre/avatar), pero un trigger
+  dedicado (`profiles_guard_role`) revierte cualquier cambio a la columna
+  `role` que no venga de un superadmin — verificado en vivo.
+- **El alta de un usuario nuevo no le da ningún permiso por defecto**: el
+  trigger `handle_new_user` crea el perfil con `role='sin_acceso'` (no
+  matchea ni `is_admin()` ni `is_superadmin()`). El rol real (`admin` /
+  `superadmin`) lo asigna siempre, de forma explícita, la Edge Function
+  `invite-admin` después de crear el usuario — nunca depende de un default.
+  Esto es defensa en profundidad: hoy el registro público está deshabilitado
+  en Supabase Auth (verificado en vivo), pero si ese interruptor externo se
+  reactivara alguna vez por error, un self-signup ya no quedaría con acceso
+  automático al panel.
 - `ProtectedRoute` (frontend) es solo UX — oculta pantallas que el usuario no
   podría usar igual porque la base se lo va a rechazar.
 - Crear usuarios nuevos requiere la `service_role key`, que **nunca** está en
   el frontend — vive solo en la Edge Function `supabase/functions/invite-admin`,
   que además valida que quien invoca sea superadmin antes de usarla.
+- **Storage a la par de las tablas, no solo las tablas**: las policies de
+  `storage.objects` para fotos de trabajos e íconos de servicios exigen
+  `is_superadmin()` (antes solo exigían estar logueado, un admin común podía
+  tocar el archivo aunque no pudiera tocar la fila). Las de `avatares` exigen
+  además que la carpeta del archivo (`<user_id>/...`) coincida con
+  `auth.uid()`, para que nadie pise el avatar de otro. Ver
+  `supabase/sql/pentest_fixes_2026-09.sql`.
 
 ## A02:2021 — Cryptographic Failures
 
@@ -45,17 +63,26 @@ constraints, triggers). React solo da una buena experiencia de uso alrededor.
 - **Doble reserva de turno**: resuelto con un índice único parcial en
   `(fecha, horario)` — no es una validación de aplicación que se pueda
   saltear con una race condition, es una garantía de la base.
-- **Anti-bot**: honeypot (`website`) en los formularios públicos de turno y
-  contacto — invisible para una persona, casi siempre completado por bots de
-  autocompletado.
+- **Anti-bot**: honeypot (`website`) en los formularios públicos de turno,
+  contacto y obra — invisible para una persona, casi siempre completado por
+  bots de autocompletado. Límite conocido: el honeypot solo frena bots que
+  completan el formulario real; un ataque scripteado que le pegue directo a
+  la API de Supabase lo saltea. No hay CAPTCHA ni rate-limit por IP todavía
+  — pendiente si se vuelve un problema real de spam.
+- **Buckets públicos con subida sin sesión** (`obra-adjuntos`) tienen
+  `file_size_limit` (8 MB) y `allowed_mime_types` (solo imagen/PDF) puestos
+  en el propio bucket de Supabase, no solo validados en el formulario — un
+  script que le pegue directo a la Storage API no puede saltearse el límite
+  ni subir HTML/SVG con script.
 - Mensajes de error de login deliberadamente genéricos ("Email o contraseña
   incorrectos") para no filtrar si un email existe (user enumeration).
 
 ## A05:2021 — Security Misconfiguration
 
-- `public/_headers` (Netlify) y `vercel.json` (Vercel) con CSP,
-  `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` y
-  `Permissions-Policy`.
+- `vercel.json` (el hosting real es Vercel) con CSP, `X-Content-Type-Options`,
+  `X-Frame-Options`, `Referrer-Policy` y `Permissions-Policy` — verificado que
+  se sirven de verdad contra el sitio en producción, no solo que el archivo
+  existe.
 - Nota sobre la CSP: `style-src` incluye `'unsafe-inline'` porque algunos
   componentes usan estilos inline para valores dinámicos (ej. la altura de
   las barras del gráfico de facturación). `script-src` es estricto

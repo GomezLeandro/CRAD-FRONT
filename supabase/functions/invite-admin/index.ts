@@ -108,19 +108,20 @@ Deno.serve(async (req: Request) => {
     return respond({ error: message }, 400);
   }
 
-  // El trigger on_auth_user_created ya le asigna role='admin' por defecto;
-  // si se pidió 'superadmin', lo actualizamos acá.
-  if (role === 'superadmin') {
-    const { error: updateError } = await adminClient
-      .from('profiles')
-      .update({ role: 'superadmin' })
-      .eq('id', data.user.id);
-    if (updateError) {
-      return respond(
-        { error: 'Se invitó al usuario, pero no se pudo asignarle el rol superadmin' },
-        500
-      );
-    }
+  // El trigger on_auth_user_created ya no asigna ningún rol con permisos
+  // por defecto (crea el perfil en 'sin_acceso') — así, si alguna vez se
+  // reactiva el signup público por error, un self-signup no queda con
+  // acceso al panel. Por eso acá SIEMPRE asignamos el rol real de forma
+  // explícita, tanto para 'admin' como para 'superadmin'.
+  const { error: updateError } = await adminClient
+    .from('profiles')
+    .update({ role })
+    .eq('id', data.user.id);
+  if (updateError) {
+    return respond(
+      { error: 'Se invitó al usuario, pero no se pudo asignarle el rol' },
+      500
+    );
   }
 
   return respond({ id: data.user.id, email, nombre, role }, 200);
