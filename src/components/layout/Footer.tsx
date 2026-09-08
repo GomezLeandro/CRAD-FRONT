@@ -14,7 +14,7 @@ export function Footer() {
           </div>
           <div className={styles.contact}>
             <div>
-              <PhoneIcon /> +54 9 11 2237-0857
+              <PhoneIcon /> +54 9 11 7286-9207
             </div>
             <div>
               <MailIcon /> serviciosgrupocrad@gmail.com
@@ -27,6 +27,12 @@ export function Footer() {
         <div className={styles.bottom}>
           <span>© {new Date().getFullYear()} CRAD Construcciones y Reparaciones</span>
           <span>Instagram · WhatsApp</span>
+        </div>
+        <div className={styles.credit}>
+          Desarrollado por{' '}
+          <a href="https://www.profilemarketing.com.ar" target="_blank" rel="noopener noreferrer">
+            Profile
+          </a>
         </div>
       </div>
     </footer>

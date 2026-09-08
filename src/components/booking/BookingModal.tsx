@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { Modal } from '../ui/Modal';
-import { crearTurno } from '../../services/turnosService';
+import { crearTurno, listarHorariosOcupados } from '../../services/turnosService';
 import { nuevoTurnoSchema } from '../../lib/validation';
 import styles from './BookingModal.module.css';
 
@@ -10,7 +10,7 @@ interface BookingModalProps {
   rubro: string;
 }
 
-const HORARIOS = ['09:00', '11:30', '15:00', '17:30'];
+const HORARIOS = Array.from({ length: 11 }, (_, i) => `${String(8 + i).padStart(2, '0')}:00`);
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -20,6 +20,7 @@ export function BookingModal({ open, onClose, rubro }: BookingModalProps) {
   const [contacto, setContacto] = useState('');
   const [fecha, setFecha] = useState('');
   const [horario, setHorario] = useState(HORARIOS[0]);
+  const [ocupados, setOcupados] = useState<string[]>([]);
   // Honeypot: un input real en el DOM, invisible para una persona,
   // que los bots de autocompletado sí suelen rellenar.
   const [website, setWebsite] = useState('');
@@ -33,6 +34,7 @@ export function BookingModal({ open, onClose, rubro }: BookingModalProps) {
     setContacto('');
     setFecha('');
     setHorario(HORARIOS[0]);
+    setOcupados([]);
     setWebsite('');
     setStatus('idle');
     setErrorMsg('');
@@ -43,6 +45,28 @@ export function BookingModal({ open, onClose, rubro }: BookingModalProps) {
     resetForm();
     onClose();
   }
+
+  useEffect(() => {
+    if (!fecha) {
+      setOcupados([]);
+      return;
+    }
+    let cancelado = false;
+    listarHorariosOcupados(fecha).then((result) => {
+      if (cancelado) return;
+      if (result.ok) setOcupados(result.data);
+    });
+    return () => {
+      cancelado = true;
+    };
+  }, [fecha]);
+
+  useEffect(() => {
+    if (ocupados.includes(horario)) {
+      const libre = HORARIOS.find((h) => !ocupados.includes(h));
+      if (libre) setHorario(libre);
+    }
+  }, [ocupados, horario]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -146,34 +170,50 @@ export function BookingModal({ open, onClose, rubro }: BookingModalProps) {
               {fieldErrors.contacto && <p className="error">{fieldErrors.contacto}</p>}
             </div>
 
-            <div className={styles.row}>
-              <div className="field">
-                <label htmlFor="fecha">Fecha</label>
-                <input
-                  id="fecha"
-                  type="date"
-                  lang="es-AR"
-                  value={fecha}
-                  min={new Date().toISOString().slice(0, 10)}
-                  onChange={(e) => setFecha(e.target.value)}
-                />
-                {fieldErrors.fecha && <p className="error">{fieldErrors.fecha}</p>}
+            <div className="field">
+              <label htmlFor="fecha">Fecha</label>
+              <input
+                id="fecha"
+                type="date"
+                lang="es-AR"
+                value={fecha}
+                min={new Date().toISOString().slice(0, 10)}
+                onChange={(e) => setFecha(e.target.value)}
+              />
+              {fieldErrors.fecha && <p className="error">{fieldErrors.fecha}</p>}
+            </div>
+
+            <div className="field">
+              <label id="horario-label">Horario</label>
+              <div className={styles.horarios} role="group" aria-labelledby="horario-label">
+                {HORARIOS.map((h) => {
+                  const tomado = ocupados.includes(h);
+                  return (
+                    <button
+                      key={h}
+                      type="button"
+                      className={styles.slot}
+                      data-tomado={tomado}
+                      aria-pressed={horario === h}
+                      aria-label={tomado ? `${h} hs, ocupado` : `${h} hs`}
+                      disabled={tomado}
+                      onClick={() => setHorario(h)}
+                    >
+                      {h}
+                    </button>
+                  );
+                })}
               </div>
-              <div className="field">
-                <label htmlFor="horario">Horario</label>
-                <select id="horario" value={horario} onChange={(e) => setHorario(e.target.value)}>
-                  {HORARIOS.map((h) => (
-                    <option key={h} value={h}>
-                      {h} hs
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {fecha && (
+                <p className={styles.horariosHint}>
+                  <span className={styles.legendDot} /> Ocupado
+                </p>
+              )}
             </div>
 
             <div className={styles.urgencyNote}>
               <span>¿Es urgente?</span> No pidas turno — llamanos directo al{' '}
-              <a href="tel:+5491122370857">+54 9 11 2237-0857</a>
+              <a href="tel:+5491172869207">+54 9 11 7286-9207</a>
             </div>
 
             {status === 'error' && <p className="error">{errorMsg}</p>}

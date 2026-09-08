@@ -7,11 +7,13 @@ import { BookingModal } from '../BookingModal';
 // Mockeamos directamente el service, que es el único contrato permitido.
 vi.mock('../../../services/turnosService', () => ({
   crearTurno: vi.fn(),
+  listarHorariosOcupados: vi.fn(),
 }));
 
-import { crearTurno } from '../../../services/turnosService';
+import { crearTurno, listarHorariosOcupados } from '../../../services/turnosService';
 
 const crearTurnoMock = vi.mocked(crearTurno);
+const listarHorariosOcupadosMock = vi.mocked(listarHorariosOcupados);
 
 function renderModal(onClose = vi.fn()) {
   return render(<BookingModal open onClose={onClose} rubro="Plomería" />);
@@ -19,6 +21,7 @@ function renderModal(onClose = vi.fn()) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  listarHorariosOcupadosMock.mockResolvedValue({ ok: true, data: [] });
 });
 
 describe('BookingModal', () => {
@@ -74,6 +77,23 @@ describe('BookingModal', () => {
     await user.click(screen.getByRole('button', { name: /confirmar turno/i }));
 
     expect(await screen.findByText(/ese horario ya fue reservado/i)).toBeInTheDocument();
+  });
+
+  it('deshabilita y marca como ocupados los horarios ya tomados para la fecha elegida', async () => {
+    listarHorariosOcupadosMock.mockResolvedValue({ ok: true, data: ['09:00'] });
+
+    const user = userEvent.setup();
+    renderModal();
+
+    await user.type(screen.getByLabelText(/^fecha$/i), '2026-08-10');
+
+    await waitFor(() => expect(listarHorariosOcupadosMock).toHaveBeenCalledWith('2026-08-10'));
+
+    const ocupado = await screen.findByRole('button', { name: '09:00 hs, ocupado' });
+    expect(ocupado).toBeDisabled();
+
+    const libre = screen.getByRole('button', { name: '10:00 hs' });
+    expect(libre).toBeEnabled();
   });
 
   it('el campo honeypot está presente pero oculto y no interactuable por teclado', () => {

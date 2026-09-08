@@ -19,7 +19,7 @@ export function UrgencyBar() {
         <path d="M5 4l2.5-.5 2 4-1.6 1.6a11 11 0 0 0 5 5l1.6-1.6 4 2L18 17c-6 1-13-6-13-13z" />
       </svg>
       ¿Urgencia? Llamanos ahora
-      <a href="tel:+5491122370857">+54 9 11 2237-0857</a>
+      <a href="tel:+5491172869207">+54 9 11 7286-9207</a>
     </div>
   );
 }

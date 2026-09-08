@@ -8,10 +8,53 @@
   margin-bottom: 20px;
 }
 
-.row {
+.horarios {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+
+.slot {
+  padding: 8px 4px;
+  border: 0.5px solid var(--line);
+  background: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.slot:hover:not(:disabled) {
+  border-color: var(--navy);
+}
+
+.slot[aria-pressed='true'] {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #fff;
+}
+
+.slot[data-tomado='true'] {
+  background: #dce8f7;
+  border-color: #9db8d6;
+  color: #45607e;
+  cursor: not-allowed;
+}
+
+.horariosHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--steel);
+  margin-top: 8px;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  background: #dce8f7;
+  border: 0.5px solid #9db8d6;
+  display: inline-block;
 }
 
 .urgencyNote {
@@ -49,7 +92,7 @@
 }
 
 @media (max-width: 640px) {
-  .row {
-    grid-template-columns: 1fr;
+  .horarios {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
   }
 }

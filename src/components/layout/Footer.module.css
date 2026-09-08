@@ -63,6 +63,21 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.credit {
+  padding-top: 12px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.credit a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
+}
+
+.credit a:hover {
+  color: #fff;
+}
+
 @media (max-width: 960px) {
   .top {
     flex-direction: column;

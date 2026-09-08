@@ -105,6 +105,23 @@ export async function crearTurno(
 }
 
 /**
+ * Horarios ya ocupados para una fecha, para el selector del formulario
+ * público. Usa la función `horarios_ocupados` (SECURITY DEFINER) porque
+ * la tabla turnos es admin-only por RLS y este dato debe ser público.
+ */
+export async function listarHorariosOcupados(
+  fecha: string
+): Promise<ServiceResult<string[]>> {
+  const { data, error } = await supabase.rpc('horarios_ocupados', { p_fecha: fecha });
+
+  if (error) {
+    return { ok: false, error: { code: 'UNKNOWN', message: error.message } };
+  }
+
+  return { ok: true, data: (data as string[] | null) ?? [] };
+}
+
+/**
  * Lista turnos para el panel admin. Requiere sesión — si el usuario no
  * está autenticado o no tiene rol admin/superadmin, RLS devuelve 0 filas
  * (no un error), así que este service no necesita saber nada de roles.
