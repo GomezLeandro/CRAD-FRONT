@@ -1,9 +1,25 @@
 .section {
   background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/Malla cuadricula arquitectura 1.png');
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  opacity: 0.45;
+  mask-image: linear-gradient(to bottom, black 0%, black 20%, transparent 45%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 20%, transparent 45%);
 }
 
 .titleRow {
-  background: #fff;
+  position: relative;
+  z-index: 1;
   padding: 50px 0 20px;
 }
 
@@ -11,19 +27,6 @@
   position: relative;
   padding: 20px 0 60px;
   overflow: hidden;
-}
-
-.contentRow::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('/Malla cuadricula arquitectura 1.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.45;
-  mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 65%);
-  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 25%, transparent 65%);
 }
 
 .contentInner {
@@ -107,7 +110,7 @@
 }
 
 @media (max-width: 960px) {
-  .contentRow::before {
+  .section::before {
     background-size: 700px auto;
   }
   .cols {
