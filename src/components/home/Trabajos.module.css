@@ -122,6 +122,9 @@
 }
 
 @media (max-width: 960px) {
+  .section::before {
+    background-size: 700px auto;
+  }
   .gallery {
     grid-template-columns: 1fr 1fr;
   }

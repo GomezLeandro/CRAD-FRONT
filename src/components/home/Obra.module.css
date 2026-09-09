@@ -107,6 +107,9 @@
 }
 
 @media (max-width: 960px) {
+  .contentRow::before {
+    background-size: 700px auto;
+  }
   .cols {
     grid-template-columns: 1fr;
     gap: 30px;
