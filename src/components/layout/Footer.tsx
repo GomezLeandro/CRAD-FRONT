@@ -9,7 +9,6 @@ export function Footer() {
             <img src="/LogoIcon.png" alt="" className={styles.logoIcon} />
             <span className={styles.logoText}>
               CRAD
-              <small>Construcciones y Reparaciones</small>
             </span>
           </div>
           <div className={styles.contact}>
@@ -27,7 +26,7 @@ export function Footer() {
         <div className={styles.bottom}>
           <span>© {new Date().getFullYear()} CRAD Construcciones y Reparaciones</span>
           <a
-            href="https://www.instagram.com/crad.construcciones/"
+            href="https://www.instagram.com/grupo.crad/"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.instagram}

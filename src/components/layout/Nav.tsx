@@ -18,7 +18,6 @@ export function Nav() {
             <img src="/LogoIcon.png" alt="" className={styles.logoIcon} />
             <span className={styles.logoText}>
               CRAD
-              <small>Construcciones y Reparaciones</small>
             </span>
           </a>
           <nav className={styles.links}>
