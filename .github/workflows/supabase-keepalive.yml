@@ -1,14 +1,18 @@
 # Evita que Supabase (plan free) pause el proyecto por 7 días sin actividad.
-# Hace una consulta mínima a la tabla pública `servicios` cada 3 días.
+# Hace una consulta mínima a la tabla pública `servicios` todos los días.
 #
-# Requiere estos secrets en GitHub (Settings → Secrets and variables → Actions):
-#   - SUPABASE_URL       → mismo valor que VITE_SUPABASE_URL
-#   - SUPABASE_ANON_KEY  → mismo valor que VITE_SUPABASE_ANON_KEY (clave pública)
+# La URL va fija acá (es pública, ya viaja en el front) para no depender de un
+# secret que pueda apuntar a otro proyecto.
+#
+# Requiere este secret en GitHub (Settings → Secrets and variables → Actions):
+#   - SUPABASE_ANON_KEY  → mismo valor que VITE_SUPABASE_ANON_KEY (clave pública sb_publishable_…)
+#
+# Si la consulta no devuelve filas, el job falla y GitHub manda un mail.
 name: Supabase keep-alive
 
 on:
   schedule:
-    - cron: '0 12 */3 * *'
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 jobs:
@@ -17,10 +21,13 @@ jobs:
     steps:
       - name: Consultar la base
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_URL: https://snadabbytrthkuxcmtkw.supabase.co
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          curl --fail --silent --show-error \
+          echo "Proyecto: $SUPABASE_URL"
+          status=$(curl --silent --show-error --output body.json --write-out '%{http_code}' \
             "$SUPABASE_URL/rest/v1/servicios?select=id&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY"
+            -H "apikey: $SUPABASE_ANON_KEY")
+          echo "HTTP $status"
+          cat body.json; echo
+          [ "$status" = "200" ] && grep -q '"id"' body.json
